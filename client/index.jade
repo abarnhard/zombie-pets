@@ -1,10 +1,10 @@
 doctype html
-html(ng-app='mean-template', lang='en')
+html(ng-app='zombie-pets', lang='en')
   head
     meta(charset='utf-8')
     meta(http-equiv='X-UA-Compatible', content='IE=edge')
     meta(name='viewport', content='width=device-width, initial-scale=1')
-    title MEAN Template
+    title Zombie Pets
     link(href='/vendor/bootstrap/dist/css/bootstrap.css', rel='stylesheet')
     link(href='/vendor/fontawesome/css/font-awesome.css', rel='stylesheet')
     link(href='/index.css', rel='stylesheet')
@@ -13,9 +13,88 @@ html(ng-app='mean-template', lang='en')
       .row
         .col-xs-12
           h1 {{title}}
-          h2
-            span Web Development for &nbsp;
-            em: u {{occupation}}
+      .row
+        .col-xs-12
+          #cage(ng-show='isSet1 && isSet2')
+            .panel
+              .panel-body
+                .row
+                  .col-xs-4
+                    .player#player1
+                      .petPic(style='background-image:url("{{player1.photo}}");')
+                      .healthMeter
+                        #health1
+                      h6 {{player1.name}}
+                      h6 {{player1.weapon.name}}
+                      h6 {{player1.weapon.damage}}
+                      h6 {{player1.health}}
+                  .col-xs-4
+                    button.btn.btn-danger.btn-xl(type='button', ng-click='fight()') FIGHT!!
+                  .col-xs-4
+                    .player#player2
+                      .petPic(style='background-image:url("{{player2.photo}}");')
+                      .healthMeter
+                        #health2
+                      h6 {{player2.name}}
+                      h6 {{player2.weapon.name}}
+                      h6 {{player2.weapon.damage}}
+                      h6 {{player2.health}}
+      .row
+        .col-xs-3
+          h4 It's Dangerous To Go Alone:
+          button.btn.btn-success.btn-xs(type='button', ng-click='toggleWeapon()') Toggle Form
+          form(role='form', novalidate, ng-hide='hideWeapon', name='weaponForm')
+            .form-group
+              label.control-label Name
+              input.form-control#name(ng-model='weapon.name', type='text', name='name', required, ng-minlength='3', ng-maxlength='10')
+            .form-group
+              label.control-label Photo
+              input.form-control(ng-model='weapon.photo', type='text', name='photo', required, ng-pattern='/^http/')
+            .form-group
+              label.control-label Damage
+              input.form-control(ng-model='weapon.damage', type='number', name='damage', required)
+            button.btn.btn-danger(type='submit', ng-show='weaponForm.$valid', ng-click='addWeapon()') Make Weapon
+        .col-xs-3
+          h4 Let's Battle Already
+          button.btn.btn-success.btn-xs(type='button', ng-click='togglePet()') Toggle Form
+          form(role='form', novalidate, ng-hide='hidePet', name='petForm')
+            .form-group
+              label.control-label Name
+              input.form-control#petname(ng-model='pet.name', type='text', name='name', required)
+            .form-group
+              label.control-label Photo
+              input.form-control(ng-model='pet.photo', type='text', name='photo', required, ng-pattern='/^http/')
+            .form-group
+              label.control-label Health 100
+              input.form-control(type='number', readonly, ng-model='pet.health')
+            .form-group
+              label.control-label Choose Weapon
+              select.form-control(name='weapon', ng-model='pet.weapon')
+                option(ng-repeat='w in weapons', value='{{$index}}') {{w.name}}
+            button.btn.btn-danger(type='submit', ng-show='petForm.$valid', ng-click='addPet()') Spawn Pet
+        .col-xs-6
+      .row
+        .col-xs-12
+          .weapon(ng-repeat='w in weapons', style='background-image:url("{{w.photo}}")')
+            .name {{w.name}}
+            .damage {{w.damage}}
+      .row
+        .col-xs-12
+          .pet(ng-repeat='p in pets', style='background-image:url("{{p.photo}}")')
+            .name {{p.name}}
+            .weaponname {{p.weapon.name}}
+            button.btn.btn-danger.btn-xs(ng-click='setPlayer(1)', ng-hide='isSet1') 1
+            button.btn.btn-danger.btn-xs(ng-click='setPlayer(2)', ng-hide='isSet2') 2
+
+      .row
+        .col-xs-12
+          pre {{weapon | json}}
+          pre {{weapons | json}}
+          pre {{pet | json}}
+          pre {{pets | json}}
+          pre {{player1 | json}}
+          pre {{player2 | json}}
+
 
     script(src='/vendor/angular/angular.js')
     script(src='/vendor/jquery/dist/jquery.js')
